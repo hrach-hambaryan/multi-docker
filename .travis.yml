@@ -1,0 +1,21 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t hracho/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=TRUE hracho/react-test npm test
+
+after_success:
+    - docker build -t hracho/multi-client ./client
+    - docker build -t hracho/multi-nginx ./nginx
+    - docker build -t hracho/multi-server ./server
+    - docker build -t hracho/multi-worker ./worker
+    #Take this images and push them to dockerhub    
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push hracho/multi-client
+    - docker push hracho/multi-nginx 
+    - docker push hracho/multi-server
+    - docker push hracho/multi-worker
