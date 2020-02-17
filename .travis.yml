@@ -20,3 +20,15 @@ after_success:
     - docker push hracho/multi-nginx 
     - docker push hracho/multi-server
     - docker push hracho/multi-worker
+deploy:
+    edge: true
+    provider: elasticbeanstalk
+    region: eu-central-1
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-eu-central-1-900873517060
+    bucket_path: docker-multi
+    on:
+        branch: master
+    acess-key-id: $AWS_ACCESS_KEY
+    secret-access-key: $AWS_SECRET_KEY
